@@ -4,6 +4,9 @@
   <img src="https://img.shields.io/badge/Award-National%20Second%20Prize%20(%E5%9B%BD%E8%B5%9B%E4%BA%8C%E7%AD%89%E5%A5%96)-gold?style=for-the-badge&logo=trophy" alt="National Second Prize" />
   <img src="https://img.shields.io/badge/National%20Macro--F1-0.945-brightgreen?style=for-the-badge" alt="Macro F1 0.945" />
   <img src="https://img.shields.io/badge/Preliminary%20Macro--F1-0.922-blue?style=for-the-badge" alt="Macro F1 0.922" />
+  <a href="https://huggingface.co/xieyuy/traffic-sign-adverse-weather" target="_blank">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model%20Weights-yellow?style=for-the-badge&logo=huggingface" alt="Hugging Face Models" />
+  </a>
   <img src="https://img.shields.io/badge/Platform-MoModel%20(2%20Core%20CPU)-orange?style=for-the-badge" alt="CPU Inference" />
   <img src="https://img.shields.io/badge/PyTorch-1.12+-EE4C2C?style=for-the-badge&logo=pytorch" alt="PyTorch" />
 </p>
@@ -16,7 +19,8 @@
 
 方案在**极度苛刻的评测约束（纯 2 核 CPU、8GB RAM、无 GPU、70 分钟总推理时限）**下，凭借创新的异构三模型加权软投票集成（Weighted Soft Voting）以及安全多尺度 TTA 策略，最终取得 **Macro-F1 = 0.945** 的顶尖成绩，荣获**全国二等奖**！
 
-> 📘 **深度复盘与技术体系总结**：详见 [RETROSPECTIVE.md](RETROSPECTIVE.md)（包含从 0.922 到 0.945 的完整迭代演进、四大实战避坑实录与黑盒算力受限比赛方法论）。
+- 📘 **深度复盘与技术体系总结**：详见 [RETROSPECTIVE.md](RETROSPECTIVE.md)（包含从 0.922 到 0.945 的完整迭代演进、四大实战避坑实录与黑盒算力受限比赛方法论）。
+- 🤗 **模型权重 Hub**：已同步开源托管于 [Hugging Face: xieyuy/traffic-sign-adverse-weather](https://huggingface.co/xieyuy/traffic-sign-adverse-weather)。
 
 ---
 
@@ -35,6 +39,30 @@
 
 ---
 
+## 📦 模型权重下载 (Hugging Face)
+
+比赛训练生成的最佳权重已完整托管至 Hugging Face 模型库：  
+🔗 **[https://huggingface.co/xieyuy/traffic-sign-adverse-weather](https://huggingface.co/xieyuy/traffic-sign-adverse-weather)**
+
+| 模型 | 文件名 | 参数量 | 尺寸 | 单模验证 Macro-F1 | Hugging Face 直链 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **ConvNeXt V2-Base** | `convnextv2_base_best.pth` | 89M | 335 MB | **0.938** | [下载](https://huggingface.co/xieyuy/traffic-sign-adverse-weather/resolve/main/convnextv2_base_best.pth) |
+| **Swin Transformer V2-Base** | `swin_v2_b_best.pth` | 88M | 332 MB | **0.916** | [下载](https://huggingface.co/xieyuy/traffic-sign-adverse-weather/resolve/main/swin_v2_b_best.pth) |
+| **EfficientNetV2-M** | `efficientnet_v2_m_best.pth` | 54M | 203 MB | **0.917** | [下载](https://huggingface.co/xieyuy/traffic-sign-adverse-weather/resolve/main/efficientnet_v2_m_best.pth) |
+
+### 一键下载权重到本地 `results/` 目录：
+```python
+from huggingface_hub import snapshot_download
+
+snapshot_download(
+    repo_id="xieyuy/traffic-sign-adverse-weather",
+    local_dir="./results",
+    allow_patterns=["*.pth", "classes.txt"]
+)
+```
+
+---
+
 ## 📂 仓库目录结构
 
 ```text
@@ -43,6 +71,9 @@ D:\MOPRO/
 ├── CONTEXT.md                  # 赛题背景与技术规格白皮书
 ├── inference_optimization_notes.md # CPU 算力平衡与模型选型对比笔记
 ├── platform_faq.md             # 平台环境限制与排错指引
+├── upload_to_hf.py             # Hugging Face 模型权重自动上传工具
+├── .gitignore                  # Git 忽略配置
+├── LICENSE                     # MIT 开源协议
 │
 ├── train.py                    # 核心训练代码（支持 Focal Loss, SWA, Mixup, Warmup）
 ├── dataset.py                  # 恶劣天气针对性数据增强管道
@@ -76,9 +107,6 @@ D:\MOPRO/
 │   └── official_baseline_train.py
 │
 └── results/                    # 模型权重保存目录 (*.pth)
-    ├── convnextv2_base_best.pth
-    ├── efficientnet_v2_m_best.pth
-    └── swin_v2_b_best.pth
 ```
 
 ---
@@ -96,15 +124,21 @@ source .venv/bin/activate  # Linux
 # .venv\Scripts\activate   # Windows
 
 # 安装核心依赖
-pip install torch torchvision timm scikit-learn pillow opencv-python tqdm
+pip install torch torchvision timm scikit-learn pillow opencv-python tqdm huggingface_hub
 ```
 
-### 2. 模型训练
+### 2. 获取预训练模型权重
 ```bash
-# 方式 A：Windows 下一键训练三剑客模型
+# 自动从 Hugging Face 下载比赛最佳权重
+python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='xieyuy/traffic-sign-adverse-weather', local_dir='./results', allow_patterns=['*.pth', 'classes.txt'])"
+```
+
+### 3. 模型训练（若需重新训练）
+```bash
+# Windows 下一键全自动训练三剑客模型
 run_train_official.bat
 
-# 方式 B：使用命令行启动单一模型训练
+# 或使用命令行启动单一模型训练
 python train.py \
     --model convnextv2_base \
     --dataset official \
@@ -120,9 +154,9 @@ python train.py \
     --num_workers 0
 ```
 
-### 3. 本地与线上推理评测
+### 4. 本地与线上推理评测
 ```bash
-# 本地测试单张图片或验证流程
+# 本地测试推理流程
 python main.py
 ```
 线上部署时，只需将 `submit/` 文件夹内的内容上传至平台的 `/home/jovyan/work/` 目录即可，系统将自动调用本地内置的 `timm` 库并使用 `results/*.pth` 权重运行。

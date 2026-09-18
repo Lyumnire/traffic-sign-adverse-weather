@@ -1,8 +1,9 @@
 # 恶劣天气下的交通标识识别 — 睿抗机器人开发者大赛(raicom)智海算法调优赛国赛复盘
 
 > **赛事成绩**：
-> - **国赛**：F1 Macro = **0.945**，**二等奖**
-> - **初赛**：F1 Macro = **0.922**，**二等奖**
+> - **国赛**：F1 Macro = **0.945**，荣获**全国二等奖**
+> - **初赛**：F1 Macro = **0.922**，荣获**全国二等奖**（排名前 40%）
+> - **开源资产**：[GitHub 仓库](https://github.com/Lyumnire/traffic-sign-adverse-weather) | [Hugging Face 模型库](https://huggingface.co/xieyuy/traffic-sign-adverse-weather)
 > 
 > 本文档全面系统地复盘整个比赛周期的技术路线、演进过程、经验教训与踩坑实录，将比赛成果沉淀为可在后续 CV 竞赛与工程交付中直接复用的技术体系。
 
