@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C/C++ build artifacts & binaries
+*.so
+*.dylib
+*.dll
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE & Editor configs
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.settings/
+
+# Datasets & raw archives (large files)
+datasets/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# OS artifacts
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# PyTorch checkpoints & weights (Release via GitHub Releases or Git LFS)
+*.pth
+*.pt
+*.onnx
+*.bin
+results/*.pth
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Scratch & temporary logs
+scratch/
+*.log

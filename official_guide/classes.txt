@@ -1,0 +1,25 @@
+0	children crossing traffic sign
+1	dangerous curve left traffic sign
+2	dangerous curve right traffic sign
+3	double curve traffic sign
+4	end of speed limit 80 traffic sign
+5	general caution traffic sign
+6	go straight or left traffic sign
+7	go straight or right traffic sign
+8	ahead only traffic sign
+9	no overtaking traffic sign
+10	no overtaking trucks 3.5t traffic sign
+11	pedestrian crossing traffic sign
+12	road narrows traffic sign
+13	road work traffic sign
+14	slippery road traffic sign
+15	speed limit 20 traffic sign
+16	speed limit 30 traffic sign
+17	speed limit 50 traffic sign
+18	speed limit 60 traffic sign
+19	speed limit 80 traffic sign
+20	speed limit 100 traffic sign
+21	speed limit 120 traffic sign
+22	steep hill warning sign
+23	turn left traffic sign
+24	turn right traffic sign
